@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AtlasMeet Discord Test</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            color: white;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #fff;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            font-size: 14px;
+        }
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        button {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            background: #7289da;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #5b6eae;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+        }
+        .success {
+            background: rgba(76, 175, 80, 0.3);
+            border: 1px solid #4caf50;
+        }
+        .error {
+            background: rgba(244, 67, 54, 0.3);
+            border: 1px solid #f44336;
+        }
+        .info {
+            background: rgba(33, 150, 243, 0.3);
+            border: 1px solid #2196f3;
+        }
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔗 AtlasMeet Discord Integration Test</h1>
+        
+        <div class="form-group">
+            <label for="webhookUrl">Discord Webhook URL:</label>
+            <input type="text" id="webhookUrl" placeholder="https://discord.com/api/webhooks/YOUR_WEBHOOK_ID/YOUR_WEBHOOK_TOKEN">
+        </div>
+        
+        <div class="button-group">
+            <button onclick="testConnection()">Test Connection</button>
+            <button onclick="sendTestLog()">Send Test Log</button>
+            <button onclick="sendAccountCreation()">Test Account Creation</button>
+        </div>
+        
+        <div id="result" class="result"></div>
+        
+        <div class="status">
+            <strong>Instructions:</strong><br>
+            1. Create a webhook in your Discord server<br>
+            2. Copy the webhook URL and paste it above<br>
+            3. Test the connection<br>
+            4. Check your Discord channel for messages
+        </div>
+    </div>
+
+    <script>
+        async function testConnection() {
+            const webhookUrl = document.getElementById('webhookUrl').value;
+            
+            if (!webhookUrl) {
+                showResult('Please enter a webhook URL', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch(webhookUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        content: '🧪 **AtlasMeet Discord Test** - Connection successful!',
+                        embeds: [{
+                            title: '✅ Connection Test',
+                            description: 'Your Discord webhook is working correctly!',
+                            color: 0x00ff00,
+                            timestamp: new Date().toISOString(),
+                            footer: {
+                                text: 'AtlasMeet Integration Test'
+                            }
+                        }]
+                    }),
+                });
+                
+                if (response.ok) {
+                    showResult('✅ Connection successful! Check your Discord channel.', 'success');
+                } else {
+                    showResult(`❌ Connection failed: ${response.status} ${response.statusText}`, 'error');
+                }
+            } catch (error) {
+                showResult(`❌ Error: ${error.message}`, 'error');
+            }
+        }
+        
+        async function sendTestLog() {
+            const webhookUrl = document.getElementById('webhookUrl').value;
+            
+            if (!webhookUrl) {
+                showResult('Please enter a webhook URL', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch(webhookUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        embeds: [{
+                            title: '📝 Event Registration',
+                            color: 0x0099ff,
+                            timestamp: new Date().toISOString(),
+                            fields: [
+                                {
+                                    name: '👤 User Information',
+                                    value: '**Name:** Test Student\n**Email:** test@student.edu\n**Role:** student\n**Website ID:** ATLAS-TEST-001',
+                                    inline: true,
+                                },
+                                {
+                                    name: '📅 Event',
+                                    value: '**Title:** Test Event\n**Event ID:** test-event-123',
+                                    inline: true,
+                                },
+                                {
+                                    name: '📝 Application',
+                                    value: 'CV submitted for review',
+                                    inline: false,
+                                }
+                            ],
+                            footer: {
+                                text: 'AtlasMeet Security Log',
+                                icon_url: 'https://cdn.discordapp.com/embed/avatars/0.png',
+                            },
+                        }]
+                    }),
+                });
+                
+                if (response.ok) {
+                    showResult('✅ Test log sent! Check your Discord channel.', 'success');
+                } else {
+                    showResult(`❌ Failed to send log: ${response.status} ${response.statusText}`, 'error');
+                }
+            } catch (error) {
+                showResult(`❌ Error: ${error.message}`, 'error');
+            }
+        }
+        
+        async function sendAccountCreation() {
+            const webhookUrl = document.getElementById('webhookUrl').value;
+            
+            if (!webhookUrl) {
+                showResult('Please enter a webhook URL', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch(webhookUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        embeds: [{
+                            title: '👤 Account Created',
+                            color: 0x00ff00,
+                            timestamp: new Date().toISOString(),
+                            fields: [
+                                {
+                                    name: '👤 User Information',
+                                    value: '**Name:** John Doe\n**Email:** john.doe@example.com\n**Role:** teacher\n**Website ID:** ATLAS-LM5K2X-ABC123',
+                                    inline: true,
+                                },
+                                {
+                                    name: '📋 Details',
+                                    value: 'New teacher account created',
+                                    inline: false,
+                                }
+                            ],
+                            footer: {
+                                text: 'AtlasMeet Security Log',
+                                icon_url: 'https://cdn.discordapp.com/embed/avatars/0.png',
+                            },
+                        }]
+                    }),
+                });
+                
+                if (response.ok) {
+                    showResult('✅ Account creation log sent! Check your Discord channel.', 'success');
+                } else {
+                    showResult(`❌ Failed to send log: ${response.status} ${response.statusText}`, 'error');
+                }
+            } catch (error) {
+                showResult(`❌ Error: ${error.message}`, 'error');
+            }
+        }
+        
+        function showResult(message, type) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.textContent = message;
+            resultDiv.className = `result ${type}`;
+            resultDiv.style.display = 'block';
+        }
+    </script>
+</body>
+</html> 
